@@ -3,7 +3,10 @@
     <div class="todo-wrap">
       <todo-header :add="add"></todo-header>
       <list :todos="todos" :remove="remove"></list>
-      <todo-footer :todos="todos" :all-selected="allSelected" :remove-comleted="removeComleted"></todo-footer>
+      <!--通过属性标签传递事件 和 数据-->
+      <!--<todo-footer :todos="todos" :all-selected="allSelected" :remove-comleted="removeComleted"></todo-footer>-->
+      <!--通过自定义事件-->
+      <todo-footer ref="footer" :todos="todos" @allSelected="allSelected"></todo-footer>
     </div>
   </div>
 </template>
@@ -28,7 +31,14 @@
     //实例对象创建完成
     created () {
       //去localstorage  读取
+      //console.log(this)
       this.todos = local.read()
+    },
+    //为什么不在created，因为created还没有进行编译，拿不到ref，也就拿不到footer组件对象
+    mounted () {
+      var footer = this.$refs.footer
+      //事件名称  和  对应执行的回调函数
+      footer.$on('removeComleted',this.removeComleted)
     },
     methods: {
       //添加数据的方法，传递到header
@@ -56,6 +66,10 @@
     //深度监视todos，一旦变化，调用save
     watch: {
       todos: {
+       /* handler (newtodos) {
+          local.save(newtodos)
+        },*/
+       //这里和上边的写法是一样的，js原理简化结构
         handler: local.save,
         deep: true
       }

@@ -12,7 +12,9 @@
 
 <script>
   export default {
-    props: ['todos','removeComleted','allSelected'],
+    //标签属性传递  接收
+    //props: ['todos','removeComleted','allSelected'],
+    props: ['todos'],
     //计算属性
     computed: {
       /*
@@ -36,9 +38,17 @@
           return this.completedSize===this.todos.length && this.completedSize!=0
         },
         set (value) {
-          //更新todos的选中 状态
-          this.allSelected(value)
+          //更新todos的选中 状态   标签属性接收的事件回调函数
+          //this.allSelected(value)
+          //调用自定义事件   效果和上一行代码一样
+          this.$emit('allSelected',value)
         }
+      }
+    },
+    methods: {
+      removeComleted () {
+        //调用自定义事件
+        this.$emit('removeComleted')
       }
     }
   }
